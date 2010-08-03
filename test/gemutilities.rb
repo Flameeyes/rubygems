@@ -469,6 +469,14 @@ Also, a list:
     RUBY_PLATFORM.match('mswin')
   end
 
+  def self.jruby?
+    RUBY_PLATFORM == "java"
+  end
+
+  def jruby?
+    RUBY_PLATFORM == "java"
+  end
+
   # Returns the make command for the current platform. For versions of Ruby
   # built on MS Windows with VC++ or Borland it will return 'nmake'. On all
   # other platforms, including Cygwin, it will return 'make'.

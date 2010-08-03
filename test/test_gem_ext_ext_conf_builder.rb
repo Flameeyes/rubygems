@@ -14,6 +14,8 @@ class TestGemExtExtConfBuilder < RubyGemTestCase
   end
 
   def test_class_build
+    skip("test_class_build skipped - mkmf/extconf not supported on JRuby") if jruby?
+
     if vc_windows? && !nmake_found?
       skip("test_class_build skipped - nmake not found")
     end
@@ -50,6 +52,8 @@ class TestGemExtExtConfBuilder < RubyGemTestCase
   end
 
   def test_class_build_extconf_fail
+    skip("test_class_build_extconf_fail skipped - mkmf/extconf not supported on JRuby") if jruby?
+
     if vc_windows? && !nmake_found?
       skip("test_class_build_extconf_fail skipped - nmake not found")
     end
@@ -77,6 +81,8 @@ checking for main\(\) in .*?nonexistent/m, error.message)
   end
 
   def test_class_make
+    skip("test_class_make skipped - mkmf/extconf not supported on JRuby") if jruby?
+
     if vc_windows? && !nmake_found?
       skip("test_class_make skipped - nmake not found")
     end
@@ -108,6 +114,8 @@ install:
   end
 
   def test_class_make_no_Makefile
+    skip("test_class_make_no_Makefile skipped - mkmf/extconf not supported on JRuby") if jruby?
+
     error = assert_raises Gem::InstallError do
       Dir.chdir @ext do
         Gem::Ext::ExtConfBuilder.make @ext, ['output']
