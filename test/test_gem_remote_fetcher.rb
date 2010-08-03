@@ -695,45 +695,45 @@ gems:
     private
 
     def start_server(port, data)
-      Thread.new do
-        begin
-          null_logger = NilLog.new
-          s = WEBrick::HTTPServer.new(
-            :Port            => port,
-            :DocumentRoot    => nil,
-            :Logger          => null_logger,
-            :AccessLog       => null_logger
-            )
-          s.mount_proc("/kill") { |req, res| s.shutdown }
-          s.mount_proc("/yaml") { |req, res|
-            if @enable_yaml
-              res.body = data
-              res['Content-Type'] = 'text/plain'
-              res['content-length'] = data.size
-            else
-              res.status = "404"
-              res.body = "<h1>NOT FOUND</h1>"
-              res['Content-Type'] = 'text/html'
-            end
-          }
-          s.mount_proc("/yaml.Z") { |req, res|
-            if @enable_zip
-              res.body = Zlib::Deflate.deflate(data)
-              res['Content-Type'] = 'text/plain'
-            else
-              res.status = "404"
-              res.body = "<h1>NOT FOUND</h1>"
-              res['Content-Type'] = 'text/html'
-            end
-          }
+      begin
+        null_logger = NilLog.new
+        s = WEBrick::HTTPServer.new(
+                                    :Port            => port,
+                                    :DocumentRoot    => nil,
+                                    :Logger          => null_logger,
+                                    :AccessLog       => null_logger
+                                    )
+        s.mount_proc("/kill") { |req, res| s.shutdown }
+        s.mount_proc("/yaml") { |req, res|
+          if @enable_yaml
+            res.body = data
+            res['Content-Type'] = 'text/plain'
+            res['content-length'] = data.size
+          else
+            res.status = "404"
+            res.body = "<h1>NOT FOUND</h1>"
+            res['Content-Type'] = 'text/html'
+          end
+        }
+        s.mount_proc("/yaml.Z") { |req, res|
+          if @enable_zip
+            res.body = Zlib::Deflate.deflate(data)
+            res['Content-Type'] = 'text/plain'
+          else
+            res.status = "404"
+            res.body = "<h1>NOT FOUND</h1>"
+            res['Content-Type'] = 'text/html'
+          end
+        }
+        Thread.new do
           s.start
-        rescue Exception => ex
-          abort ex.message
-          puts "ERROR during server thread: #{ex.message}"
         end
+      rescue Exception => ex
+        abort ex.message
+        puts "ERROR during server thread: #{ex.message}"
       end
-      sleep 0.2                 # Give the servers time to startup
     end
+    sleep 0.2                 # Give the servers time to startup
   end
 
 end
